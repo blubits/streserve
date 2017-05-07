@@ -24,14 +24,18 @@ chemical_json = [
         "id": 1,
         "name": "Sodium chloride",
         "state": True,
-        "qty": 
+        "qty": 200
     }
 ]
 
 @app.route("/chemicals/")
 def chemicals():
-    return jsonify(chemicals_json)
+    return jsonify(chemical_json)
 
 @app.route("/equipment/")
 def equipment():
     return jsonify(equipment_json)
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(threaded=True)
