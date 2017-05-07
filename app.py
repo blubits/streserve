@@ -2,7 +2,7 @@
 API for the STReserve application.
 
 :Author:     Maded Batara III
-:Version:    v20170503
+:Version:    v20170508
 """
 
 from flask import Flask
@@ -28,6 +28,15 @@ chemical_json = [
     }
 ]
 
+VERSION = "20170508"
+
+@app.route("/")
+def home():
+    return jsonify({
+        "status": "OK",
+        "version": VERSION
+    })
+
 @app.route("/chemicals/")
 def chemicals():
     return jsonify(chemical_json)
@@ -38,4 +47,4 @@ def equipment():
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(threaded=True)
+    app.run()
