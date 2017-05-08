@@ -125,11 +125,31 @@ def home():
 
 @app.route("/chemicals")
 def chemicals():
-    chemical_schema.dump(author).dat
+    return jsonify([
+        {
+            "id": 1,
+            "name": "Sodium chloride",
+            "state": True,
+            "qty": 200
+        },
+        {
+            "id": 2,
+            "name": "Hydrochloric acid",
+            "state": False,
+            "qty": 300
+        }
+    ])
 
 @app.route("/equipment")
 def equipment():
-    return jsonify(list(Equipment.query.all()))
+    return jsonify([
+        {
+            "id": 1001,
+            "name": "Petri dish",
+            "is_consumable": False,
+            "qty": 15
+        }
+    ])
 
 @app.route("/chemicals/add")
 def add_chemical():
@@ -137,6 +157,14 @@ def add_chemical():
 
 @app.route("/equipment/add")
 def add_equipment():
+    pass
+
+@app.route("/chemicals/remove")
+def remove_chemical():
+    pass
+
+@app.route("/equipment/remove")
+def remove_equipment():
     pass
 
 @app.route("/chemicals/<id:id>/modify")
