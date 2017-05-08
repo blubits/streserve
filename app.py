@@ -128,6 +128,7 @@ def home():
     })
 
 @app.route("/chemicals")
+@app.route("/chemicals/")
 def chemicals():
     return jsonify([
         {
@@ -139,6 +140,7 @@ def chemicals():
     ])
 
 @app.route("/equipment")
+@app.route("/equipment/")
 def equipment():
     return jsonify([
         {
