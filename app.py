@@ -65,12 +65,14 @@ class ChemicalLog(db.Model):
     group_code = db.Column(db.Integer)
     chemical_id = db.Column(db.Integer, db.ForeignKey("chemicals.id"))
     chemical = db.relationship("Chemical", back_populates="logs")
-    time_procured = db.Column(db.DateTime)
+    qty = db.Column(db.Integer)
+    date_procured = db.Column(db.DateTime)
 
-    def __init__(self, group_code, reserved_id, time_procured):
+    def __init__(self, group_code, chemical, qty, date_procured):
         self.group_code = group_code
         self.chemical = chemical
-        self.time_procured = time_procured
+        self.qty = qty
+        self.date_procured = date_procured
 
 class EquipmentLog(db.Model):
     __tablename__ = 'equipment_log'
@@ -79,14 +81,16 @@ class EquipmentLog(db.Model):
     group_code = db.Column(db.Integer)
     equipment_id = db.Column(db.Integer, db.ForeignKey("equipment.id"))
     equipment = db.relationship("Equipment", back_populates="logs")
-    time_procured = db.Column(db.DateTime)
-    time_return = db.Column(db.DateTime)
+    qty = db.Column(db.Integer)
+    date_procured = db.Column(db.DateTime)
+    date_return = db.Column(db.DateTime)
 
-    def __init__(self, group_code, equipment, time_procured, time_return):
+    def __init__(self, group_code, equipment, qty, date_procured, date_return):
         self.group_code = group_code
         self.equipment = equipment
-        self.time_procured = time_procured
-        self.time_return = time_return
+        self.qty = qty
+        self.date_procured = date_procured
+        self.date_return = date_return
 
 class ChemicalSchema(ma.ModelSchema):
     class Meta:
@@ -105,8 +109,8 @@ class EquipmentSchema(ma.ModelSchema):
 # equipment_sample = Equipment("Petri dish (small)", False, 15)
 
 # db.create_all()
-# db.session.add(chemical_sample)
-# db.session.add(chemical_sample_2)
+# for chemical in chemicals:
+#     db.session.add(chemical)
 # db.session.add(equipment_sample)
 # db.session.commit()
 
@@ -131,12 +135,6 @@ def chemicals():
             "name": "Sodium chloride",
             "state": True,
             "qty": 200
-        },
-        {
-            "id": 2,
-            "name": "Hydrochloric acid",
-            "state": False,
-            "qty": 300
         }
     ])
 
@@ -167,21 +165,30 @@ def remove_chemical():
 def remove_equipment():
     pass
 
-@app.route("/chemicals/<id:id>/modify")
-def modify_chemical(id):
+@app.route("/chemicals/<int:id>/update")
+def update_chemical(id):
     pass
 
-@app.route("/equipment/<id:id>/modify")
-def modify_equipment(id):
+@app.route("/equipment/<int:id>/update")
+def update_equipment(id):
     pass
 
-@app.route("/chemicals/<id:id>/reserve")
+@app.route("/chemicals/<int:id>/reserve")
 def reserve_chemical(id):
-    pass
+    date_reserved = request.args.get('date_reserved', None)
+    qty = request.args.get('qty', None)
+    group_code = request.args.get('group_code', None)
+    chemical = Chemical.query.filter(Chemical.id == id).first
+    log = ChemicalLog(group_code, chemical, qty, datetime(date_reserved))
 
-@app.route("/equipment/<id>/reserve")
+@app.route("/equipment/<int:id>/reserve")
 def reserve_equipment(id):
-    pass
+    date_reserved = request.args.get('date_reserved', None)
+    date_return = request.args.get('date_return', None)
+    qty = request.args.get('qty', None)
+    group_code = request.args.get('group_code', None)
+    chemical = Chemical.query.filter(Chemical.id == id).first
+    log = ChemicalLog(group_code, chemical, qty, datetime(date_reserved), datetime(date_return))
 
 if __name__ == '__main__':
     app.debug = True
