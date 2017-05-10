@@ -18,16 +18,16 @@ from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
 CORS(app)
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
+
 if 'DYNO' in os.environ:
     import psycopg2
     hr = Heroku(app)
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
-
-db.reflect()
-db.drop_all()
+    db.reflect()
+    db.drop_all()
 
 ############
 ## SCHEMA ##
