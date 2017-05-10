@@ -19,6 +19,7 @@ from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app)
 if 'DYNO' in os.environ:
+    import psycopg2
     hr = Heroku(app)
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'

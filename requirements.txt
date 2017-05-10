@@ -4,5 +4,6 @@ flask_sqlalchemy
 flask_marshmallow
 flask_heroku
 marshmallow_sqlalchemy
+psycopg2
 gunicorn
 sqlalchemy
