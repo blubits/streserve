@@ -5,17 +5,23 @@ API for the STReserve application.
 :Version:    v20170508
 """
 
+import datetime
+import os
+
 from flask import Flask
 from flask import jsonify
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+from flask_heroku import Heroku
 from flask_cors import CORS, cross_origin
-import datetime
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+if 'DYNO' in os.environ:
+    hr = Heroku(app)
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
