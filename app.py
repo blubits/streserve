@@ -26,6 +26,9 @@ else:
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
+db.reflect()
+db.drop_all()
+
 ############
 ## SCHEMA ##
 ############
@@ -103,8 +106,6 @@ equipment = []
 equipment.append(Equipment(name="Petri dish (small)", 
     is_consumable=False, qty=15))
 
-db.reflect()
-db.drop_all()
 db.create_all()
 for chemical in chemicals:
     db.session.add(chemical)
