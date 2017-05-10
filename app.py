@@ -118,12 +118,11 @@ if 'DYNO' not in os.environ:
     db.reflect()
     db.drop_all()
 db.create_all()
-if 'DYNO' not in os.environ:
-    for chemical in chemicals:
-        db.session.add(chemical)
-    for equip in equipment:
-        db.session.add(equip)
-    db.session.commit()
+for chemical in chemicals:
+    db.session.add(chemical)
+for equip in equipment:
+    db.session.add(equip)
+db.session.commit()
  
 chemical_schema = ChemicalSchema()
 equipment_schema = EquipmentSchema()
