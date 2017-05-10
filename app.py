@@ -5,8 +5,10 @@ API for the STReserve application.
 :Version:    v20170508
 """
 
+import csv
 import datetime
 import os
+import re
 
 from flask import Flask
 from flask import jsonify
@@ -26,8 +28,6 @@ if 'DYNO' in os.environ:
     hr = Heroku(app)
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-    db.reflect()
-    db.drop_all()
 
 ############
 ## SCHEMA ##
@@ -103,15 +103,27 @@ chemicals.append(Chemical(name="Sodium chloride", state=True, qty=200))
 chemicals.append(Chemical(name="Water", state=False, qty=100))
 
 equipment = []
-equipment.append(Equipment(name="Petri dish (small)", 
-    is_consumable=False, qty=15))
+with open("equipment.csv") as equipment_csv:
+    equipment_list = csv.reader(equipment_csv)
+    for row in equipment_list:
+        if row[-1] == "LOCATION":
+            continue
+        is_consumable = True if row[1].lower() in [
+            "consumable", "many", "assorted"] else False
+        qty = -1 if is_consumable else int(re.sub('[^0-9]', '', row[1]))
+        equipment.append(Equipment(name=row[0], 
+            is_consumable=is_consumable, qty=qty))
 
+if 'DYNO' not in os.environ:
+    db.reflect()
+    db.drop_all()
 db.create_all()
-for chemical in chemicals:
-    db.session.add(chemical)
-for equip in equipment:
-    db.session.add(equip)
-db.session.commit()
+if 'DYNO' not in os.environ:
+    for chemical in chemicals:
+        db.session.add(chemical)
+    for equip in equipment:
+        db.session.add(equip)
+    db.session.commit()
  
 chemical_schema = ChemicalSchema()
 equipment_schema = EquipmentSchema()
@@ -181,7 +193,7 @@ def get_equipment_log_by_id(id):
 
 @app.route("/chemicals/add/")
 def add_chemical():
-    return jsonify()
+    pass
 
 @app.route("/equipment/add/")
 def add_equipment():
@@ -197,11 +209,38 @@ def remove_equipment():
 
 @app.route("/chemicals/<int:id>/update/")
 def update_chemical(id):
-    pass
+    chemical = Chemical.query.get(id)
+    name = request.args.get('name', None)
+    state = request.args.get('state', None)
+    qty = request.args.get('qty', None)
+    if name is not None:
+        chemical.name = name
+    if state is not None:
+        chemical.state = bool(state)
+    if qty is not None:
+        chemical.qty = qty
+    return jsonify({
+        "status": "OK",
+        "log": chemical_schema.dump(chemical).data
+    })
+
 
 @app.route("/equipment/<int:id>/update/")
 def update_equipment(id):
-    pass
+    equipment = Equipment.query.get(id)
+    name = request.args.get('name', None)
+    is_consumable = request.args.get('consumable', None)
+    qty = request.args.get('qty', None)
+    if name is not None:
+        chemical.name = name
+    if is_consumable is not None:
+        chemical.is_consumable = bool(is_consumable)
+    if qty is not None:
+        chemical.qty = qty
+    return jsonify({
+        "status": "OK",
+        "log": chemical_schema.dump(chemical).data
+    })
 
 """
 Reserve a chemical.
@@ -220,10 +259,9 @@ GET args:
 def reserve_chemical(id):
     success = True
     # Get all required stuff
-    chemical = Chemical.query.filter(Chemical.id == id).first()
-    print(chemical)
-    group_code = int(request.args.get('groupcode', None))
-    qty = int(request.args.get('qty', None))
+    chemical = Chemical.query.get(id)
+    group_code = request.args.get('groupcode', None)
+    qty = request.args.get('qty', None)
     date_procured = request.args.get('dateprocured', None)
     # Convert all items to Python objects
     try:
@@ -232,26 +270,27 @@ def reserve_chemical(id):
         date_procured = datetime.datetime.combine(
             date, datetime.datetime.min.time())
     except:
-        pass
-    # Quantity check
+        success = False
+        error = "Error parsing date"
+    # Checks
     if group_code is None or qty is None or date_procured is None:
         success = False
         error = "Too few arguments"
-    elif chemical.qty - qty < 0:
+    elif chemical.qty - int(qty) < 0:
         success = False
         error = "Reserved too much"
-    elif qty < 0:
+    elif int(qty) < 0:
         success = False
         error = "Reserved too little"
-    elif group_code < 20180000:
+    elif int(group_code) < 20180000:
         success = False
         error = "Unrecognized group code"
     # Create object
     if success:
         log = ChemicalLog(
-            chemical=chemical, group_code=group_code, qty=qty, 
+            chemical=chemical, group_code=int(group_code), qty=int(qty), 
             date_procured=date_procured)
-        chemical.qty -= qty
+        chemical.qty -= int(qty)
         db.session.add(log)
         db.session.commit()
         return jsonify({
@@ -264,10 +303,74 @@ def reserve_chemical(id):
             "error": error
         })
     
+"""
+Reserve equipment.
 
+URL args:
+    id (int): ID of equipment to be reserved.
+GET args:
+    groupcode (int): Group code that reserved item, in the format BBBBSSNN
+        (where B is the group's batch, S is the group's section (01 for Charm 
+        to 16 for Res2 H), and N is the group number).
+    qty (int): Amount of equipment to be reserved.
+    dateprocured (DateTime): Date that equipment was procured in ISO format
+        (YYYYMMDD).
+    datereturn (DateTime): Date that equipment is to be returned in ISO format
+        (YYYYMMDD).
+"""
 @app.route("/equipment/<int:id>/reserve/")
 def reserve_equipment(id):
-    pass
+    success = True
+    # Get all required stuff
+    equipment = Equipment.query.get(id)
+    group_code = request.args.get('groupcode', None)
+    qty = request.args.get('qty', None)
+    date_procured = request.args.get('dateprocured', None)
+    date_return = request.args.get('datereturn', None)
+    # Convert all items to Python objects
+    try:
+        date = datetime.datetime.strptime(
+            date_procured, "%Y%m%d").date()
+        date_procured = datetime.datetime.combine(
+            date, datetime.datetime.min.time())
+        date = datetime.datetime.strptime(
+            date_return, "%Y%m%d").date()
+        date_return = datetime.datetime.combine(
+            date, datetime.datetime.max.time())
+    except:
+        success = False
+        error = "Error parsing date"
+    # Checks
+    if group_code is None or qty is None or date_procured is None or date_return is None:
+        success = False
+        error = "Too few arguments"
+    elif not equipment.is_consumable and equipment.qty - int(qty) < 0:
+        success = False
+        error = "Reserved too much"
+    elif int(qty) < 0:
+        success = False
+        error = "Reserved too little"
+    elif int(group_code) < 20180000:
+        success = False
+        error = "Unrecognized group code"
+     # Create object
+    if success:
+        log = EquipmentLog(
+            equipment=equipment, group_code=int(group_code), qty=int(qty), 
+            date_procured=date_procured, date_return=date_return)
+        if not equipment.is_consumable:
+            equipment.qty -= int(qty)
+        db.session.add(log)
+        db.session.commit()
+        return jsonify({
+            "status": "OK",
+            "log": equipment_log_schema.dump(log).data
+        })
+    else:
+        return jsonify({
+            "status": "Error",
+            "error": error
+        })
 
 if __name__ == '__main__':
     app.debug = True
