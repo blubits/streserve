@@ -192,19 +192,65 @@ def get_equipment_log_by_id(id):
 
 @app.route("/chemicals/add/")
 def add_chemical():
-    pass
+    success = True
+    name = request.args.get('name', None)
+    state = request.args.get('state', None)
+    qty = request.args.get('qty', None)
+    if name is None or state is None or qty is None:
+        success = False
+        error = "Too few arguments"
+    if success:
+        new = Chemical(name=name, state=bool(state), qty=int(qty))
+        db.session.add(new)
+        db.session.commit()
+        return jsonify({
+            "status": "OK",
+            "chemical": chemical_schema.dump(new).data
+        })
+    else:
+        return jsonify({
+            "status": "Error",
+            "error": error
+        })
 
 @app.route("/equipment/add/")
 def add_equipment():
-    pass
+    success = True
+    name = request.args.get('name', None)
+    is_consumable = request.args.get('consumable', None)
+    qty = request.args.get('qty', None)
+    if name is None or is_consumable is None or qty is None:
+        success = False
+        error = "Too few arguments"
+    if success:
+        new = Equipment(name=name, is_consumable=bool(is_consumable), qty=int(qty))
+        db.session.add(new)
+        db.session.commit()
+        return jsonify({
+            "status": "OK",
+            "equipment": equipment_schema.dump(new).data
+        })
+    else:
+        return jsonify({
+            "status": "Error",
+            "error": error
+        })
 
 @app.route("/chemicals/<int:id>/remove/")
 def remove_chemical():
-    pass
+    Chemical.query.get(id).delete()
+    db.session.commit()
+    return jsonify({
+        "status": "OK"
+    })
 
 @app.route("/equipment/<int:id>/remove/")
 def remove_equipment():
-    pass
+    chemical = Chemical.query.get(id)
+    db.session.commit()
+    return jsonify({
+        "status": "OK"
+    })
 
 @app.route("/chemicals/<int:id>/update/")
 def update_chemical(id):
