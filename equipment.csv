@@ -144,7 +144,7 @@ Inoculating needle,2,Cab 12
 Iron ring,18,"Cab 1, Cab 15(A), ASTB(Cab 17)"
 Iron stand,22,"Cab 15(B), Laminar flow hood room, ASTB"
 Jack,5,Cab 7
-KCl sol’n(100mL),3 boxes,MC A(B)
+KCl solâ€™n(100mL),3 boxes,MC A(B)
 kimwipes,consumable,WC C (B)
 Kitchen scale (electronic),1,WC C (B)
 Kjeldahl apparatus accessories/ parts,6 tubes,WC C (A)
@@ -202,10 +202,10 @@ Pipette (10mL),61,"Cab 12, Cab 14, ASTB(Cab 17)"
 Pipette(25mL),6,Cab 12
 Pipettor( Volac:0.1-1mL),1,MC A(B)
 Pipettor(Volac: 1-10mL),1,MC A(B)
-"Pipettor(Labnet, Biopette,autoclavable, 0.5-10µL)",1,MC A(B)
-Pipettor(Eppendorf:0.5-10µL),1,MC A(B)
-Pipettor(Volac:500-5000µL),1,MC A(B)
-Pipettor(Brand:100-1000µL),1,MC A(B)
+"Pipettor(Labnet, Biopette,autoclavable, 0.5-10ÂµL)",1,MC A(B)
+Pipettor(Eppendorf:0.5-10ÂµL),1,MC A(B)
+Pipettor(Volac:500-5000ÂµL),1,MC A(B)
+Pipettor(Brand:100-1000ÂµL),1,MC A(B)
 pH indicator strips,consumable,"RACK A/B, WC C (B)"
 pH meter( Eutech instruments),1,MC A (E)
 "pH meter (portable, pHep-Hanna)",2,WC C (B)
@@ -281,17 +281,17 @@ Tape measure,7,ASTB (Cab 10)
 "Testing sieve(1.00mm, 100x45)",1,MC A (A)
 "Testing sieve(1.00mm, 150x45)",1,MC A (A)
 "Testing sieve(1.00mm, 200x45)",1,MC A (A)
-"Testing sieve( 106µm, 55x45)",1,MC A (A)
-"Testing sieve( 106µm, 100x45)",1,MC A (A)
-"Testing sieve(106µm, 150x45)",1,MC A (A)
-"Testing sieve(106µm, 200x45)",1,MC A (A)
-"Testing sieve(250µm, 55x45)",1,MC A (A)
-"Testing sieve(250µm, 100x45)",1,MC A (A)
-"Testing sieve(250µm, 150x45)",1,MC A (A)
-"Testing sieve(500µm, 55x45)",1,MC A (A)
-"Testing sieve(500µm, 100x45)",1,MC A (A)
-"Testing sieve(500µm, 150x45)",1,MC A (A)
-"Testing sieve(500µm, 200x45)",1,MC A (A)
+"Testing sieve( 106Âµm, 55x45)",1,MC A (A)
+"Testing sieve( 106Âµm, 100x45)",1,MC A (A)
+"Testing sieve(106Âµm, 150x45)",1,MC A (A)
+"Testing sieve(106Âµm, 200x45)",1,MC A (A)
+"Testing sieve(250Âµm, 55x45)",1,MC A (A)
+"Testing sieve(250Âµm, 100x45)",1,MC A (A)
+"Testing sieve(250Âµm, 150x45)",1,MC A (A)
+"Testing sieve(500Âµm, 55x45)",1,MC A (A)
+"Testing sieve(500Âµm, 100x45)",1,MC A (A)
+"Testing sieve(500Âµm, 150x45)",1,MC A (A)
+"Testing sieve(500Âµm, 200x45)",1,MC A (A)
 Testing sieve(50 microns),1,MC A (A)
 Testing sieve((180 microns),1,MC A (A)
 Testing sieve(55x45),1,MC A (A)
@@ -359,11 +359,11 @@ Volumetric flask(100mL),13,Cab 14
 Volumetric flask(250mL),30,Cab 28
 Volumetric flask(500mL),24,"Cab 14, Cab 28"
 Wash bottle,13,Cab 9
-Washing brush,consumable,MC B ©
+Washing brush,consumable,MC B Â©
 Watch glass,7,Cab 4
-"Water analysis sol’n(4M KCl, electrode filling sol’n)",1 bottle(60ml),WC C (B)
-"Water analysis sol’n(pH buffer soln, pH 4)",1 bottle(60mL),WC C (B)
-"Water analysis sol’n( pH buffer sol’n, pH 7)",1 bottle(60mL),WC C (B)
+"Water analysis solâ€™n(4M KCl, electrode filling solâ€™n)",1 bottle(60ml),WC C (B)
+"Water analysis solâ€™n(pH buffer soln, pH 4)",1 bottle(60mL),WC C (B)
+"Water analysis solâ€™n( pH buffer solâ€™n, pH 7)",1 bottle(60mL),WC C (B)
 Water Quality Meter ( Portable lab),1 set,MC A (D)
 Water Quality Meter ( Portable lab)  adaptors,5,MC A (D)
 Weighing dish,consumable,RACK A/B
